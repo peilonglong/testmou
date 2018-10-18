@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.user.apps.UserConfig',
-    'tinymce',  #富文本
+    # 'tinymce',  #富文本
     'apps.cart',  #购物车
     'apps.goods', #商品
     'apps.order', #订单
