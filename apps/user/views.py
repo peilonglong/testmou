@@ -129,7 +129,7 @@ class LoginView(View):
         if not all([username, password]):
             return render(request, 'login.html', {'errmsg':'数据不完整'})
 
-        # 业务处理:登录校验
+        # 登录校验
         user = authenticate(username=username, password=password)
         if user is not None:
             # 用户名密码正确
@@ -137,9 +137,10 @@ class LoginView(View):
                 # 用户已激活
                 # 记录用户的登录状态
                 login(request, user)
-
-                # 跳转到首页
-                response = redirect(reverse('goods:index')) # HttpResponseRedirect
+                # 获取登录后所要跳转到的地址
+                #默认挑转到首页
+                next_url=request.GET.get('next',reverse('goods:index'))
+                response=redirect(next_url) #HttpResponseRedirect
 
                 # 判断是否需要记住用户名
                 remember = request.POST.get('remember')
@@ -159,6 +160,28 @@ class LoginView(View):
             # 用户名或密码错误
             return render(request, 'login.html',{'errmsg':'用户名或密码错误'})
 
+class UserInfoView(View):
+    '''用户中心'''
+    def get(self,request):
+        '''显示'''
+        # Django会给request对象添加一个属性request.user
+        # 如果用户未登录->user是AnonymousUser类的一个实例对象
+        # 如果用户登录->user是User类的一个实例对象
+        # request.user.is_authenticated()
+        #page='user
+        return render(request,'user_center_info.html',{'page':'user'})
+
+class UserOrderView(View):
+    '''用户订单'''
+    #page=order
+    def get(self,request):
+        return render(request,'user_center_order.html',{'page':'order'})
+
+class AddressView(View):
+    '''用户中心地址页'''
+    #page=address
+    def get(self,request):
+        return render(request,'user_center_site.html',{'page':'address'})
 
 
 

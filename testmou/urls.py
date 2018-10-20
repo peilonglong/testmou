@@ -19,7 +19,7 @@ from django.urls import path,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/',include('apps.user.urls',namespace='user')),
-    path('tinymce/',include('tinymce.urls')),#富文本集
+    # path('tinymce/',include('tinymce.urls')),#富文本集
     # path('order/',include('apps.order.urls',namespace='order')),
     # path('cart/',include('apps.cart.urls',namespace='cart')),
     path('',include('apps.goods.urls',namespace='goods')),
