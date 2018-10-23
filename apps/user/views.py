@@ -1,5 +1,5 @@
 import re
-from django.contrib.auth import authenticate, login  #登录判断
+from django.contrib.auth import authenticate, login  ,logout#登录判断
 from django.core.mail import send_mail
 from django.core.serializers.base import Serializer
 from itsdangerous import SignatureExpired   #过期异常
@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import View
-from apps.user.models import User
+from apps.user.models import User,Address
 from django.conf import settings
 from apps.goods.views import *
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -160,6 +160,15 @@ class LoginView(View):
             # 用户名或密码错误
             return render(request, 'login.html',{'errmsg':'用户名或密码错误'})
 
+class LogoutView(View):
+    #退出登录
+    def get(self,request):
+        logout(request)
+        #重定向到首页
+        return redirect(reverse('goods:index'))
+
+
+
 class UserInfoView(View):
     '''用户中心'''
     def get(self,request):
@@ -183,8 +192,22 @@ class AddressView(View):
     def get(self,request):
         return render(request,'user_center_site.html',{'page':'address'})
 
+    def post(self,request):
+        #接受数据
+        receiver=request.POST.get('receiver')
+        addr=request.POST.get('addr')
+        zip_code = request.POST.get ('zip_code')
+        phone = request.POST.get ('phone')
 
-
+        #校验数据
+        if not all([receiver,addr,zip_code,phone]):
+            return render(request,'user_center_site.html',{'errmsg':'数据结构不完整'})
+        #校验手机号
+        if not re.match(r'^1[3|4|5|7|8][0-9]{9}$',phone):
+        #业务处理：地址添加
+            return render(request,'user_center_site.html ,{'errmsg':'手机号码不完整'})
+        user=request.user
+        address=Address.objects.get(user=user,is_default=True)
 
 
 
